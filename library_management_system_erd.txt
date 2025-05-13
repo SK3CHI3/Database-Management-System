@@ -1,0 +1,203 @@
+Library Management System ERD (Entity Relationship Diagram)
+
+Main Entities and Relationships:
+
+1. MEMBERS
+   - member_id (PK)
+   - first_name
+   - last_name
+   - email
+   - phone
+   - address
+   - date_of_birth
+   - join_date
+   - membership_expiry
+   - status
+   Relationships:
+   - One member can have many loans (1:M)
+   - One member can have many reservations (1:M)
+   - One member can have many fines (1:M)
+   - One member can register for many events (M:M via event_registrations)
+
+2. PUBLISHERS
+   - publisher_id (PK)
+   - name
+   - address
+   - phone
+   - email
+   - website
+   Relationships:
+   - One publisher can publish many books (1:M)
+
+3. BOOKS
+   - book_id (PK)
+   - isbn
+   - title
+   - subtitle
+   - publication_date
+   - publication_year
+   - edition
+   - language
+   - pages
+   - description
+   - publisher_id (FK)
+   - available_copies
+   - total_copies
+   - shelf_location
+   Relationships:
+   - One book can have many authors (M:M via book_authors)
+   - One book can have many categories (M:M via book_categories)
+   - One book can have many copies (1:M)
+   - One book can be loaned many times (1:M)
+   - One book can be reserved many times (1:M)
+   - One publisher publishes many books (M:1)
+
+4. AUTHORS
+   - author_id (PK)
+   - first_name
+   - last_name
+   - biography
+   - birth_date
+   - death_date
+   - nationality
+   Relationships:
+   - One author can write many books (M:M via book_authors)
+
+5. CATEGORIES
+   - category_id (PK)
+   - name
+   - description
+   - parent_category_id (FK, self-referencing)
+   Relationships:
+   - One category can have many subcategories (1:M, self-referencing)
+   - One category can be assigned to many books (M:M via book_categories)
+
+6. BOOK_AUTHORS (Junction Table)
+   - book_id (PK, FK)
+   - author_id (PK, FK)
+   - role
+   Relationships:
+   - Connects books and authors in a many-to-many relationship
+
+7. BOOK_CATEGORIES (Junction Table)
+   - book_id (PK, FK)
+   - category_id (PK, FK)
+   - is_primary
+   Relationships:
+   - Connects books and categories in a many-to-many relationship
+
+8. STAFF
+   - staff_id (PK)
+   - first_name
+   - last_name
+   - email
+   - phone
+   - address
+   - role
+   - department
+   - hire_date
+   - termination_date
+   - salary
+   Relationships:
+   - One staff member can process many loans (1:M)
+   - One staff member can manage a library branch (1:1)
+   - One staff member can organize many events (1:M)
+
+9. LOANS
+   - loan_id (PK)
+   - book_id (FK)
+   - member_id (FK)
+   - staff_id (FK)
+   - loan_date
+   - due_date
+   - return_date
+   - status
+   - renewal_count
+   Relationships:
+   - One loan is for one book (M:1)
+   - One loan is by one member (M:1)
+   - One loan is processed by one staff member (M:1)
+   - One loan can have many fines (1:M)
+
+10. FINES
+    - fine_id (PK)
+    - loan_id (FK)
+    - member_id (FK)
+    - amount
+    - reason
+    - issue_date
+    - due_date
+    - paid
+    - payment_date
+    - payment_method
+    - staff_id (FK)
+    Relationships:
+    - One fine is for one loan (M:1)
+    - One fine is assigned to one member (M:1)
+    - One fine can be processed by one staff member (M:1)
+
+11. RESERVATIONS
+    - reservation_id (PK)
+    - book_id (FK)
+    - member_id (FK)
+    - staff_id (FK)
+    - reservation_date
+    - expiry_date
+    - fulfillment_date
+    - cancellation_date
+    - status
+    Relationships:
+    - One reservation is for one book (M:1)
+    - One reservation is by one member (M:1)
+    - One reservation can be processed by one staff member (M:1)
+
+12. LIBRARY_BRANCHES
+    - branch_id (PK)
+    - name
+    - address
+    - phone
+    - email
+    - manager_id (FK)
+    - opening_hours
+    Relationships:
+    - One branch can have many book copies (1:M)
+    - One branch can host many events (1:M)
+    - One branch is managed by one staff member (1:1)
+
+13. BOOK_COPIES
+    - copy_id (PK)
+    - book_id (FK)
+    - branch_id (FK)
+    - acquisition_date
+    - acquisition_price
+    - condition
+    - status
+    - barcode
+    Relationships:
+    - One copy is of one book (M:1)
+    - One copy belongs to one branch (M:1)
+
+14. EVENTS
+    - event_id (PK)
+    - title
+    - description
+    - start_datetime
+    - end_datetime
+    - branch_id (FK)
+    - max_attendees
+    - current_attendees
+    - organizer_id (FK)
+    Relationships:
+    - One event is held at one branch (M:1)
+    - One event is organized by one staff member (M:1)
+    - One event can have many registrations (1:M)
+
+15. EVENT_REGISTRATIONS
+    - registration_id (PK)
+    - event_id (FK)
+    - member_id (FK)
+    - registration_date
+    - attendance_status
+    Relationships:
+    - One registration is for one event (M:1)
+    - One registration is by one member (M:1)
